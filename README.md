@@ -1,5 +1,10 @@
 # SpringFestivalService
 
+
+## Tasks
+* [] setup db
+* [] CRUD from db
+
 ## Commands
 
 Create a project:
