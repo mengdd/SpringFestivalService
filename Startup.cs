@@ -11,7 +11,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SpringFestivalService.Models;
+using SpringFestivalService.Repository;
 using SpringFestivalService.ServiceRegistration;
+using SpringFestivalService.Services;
 
 namespace SpringFestivalService
 {
@@ -27,14 +30,15 @@ namespace SpringFestivalService
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "SpringFestivalService", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "SpringFestivalService", Version = "v1"});
             });
 
-            services.AddDynamoDb(Configuration);
+            services.AddDynamoDb(Configuration, "DynamoDB");
+            services.AddScoped<IShowService, ShowService>();
+            services.AddScoped<IRepository<Show>, Repository<Show>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,10 +57,7 @@ namespace SpringFestivalService
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

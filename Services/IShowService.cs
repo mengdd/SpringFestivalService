@@ -7,7 +7,8 @@ namespace SpringFestivalService.Services
     public interface IShowService
     {
         Task<Show> CreateAsync(Show show);
-        Task<List<Show>> CreateShowListAsync();
+        Task<List<Show>> GetShowListAsync();
+        Task<List<Show>> GetShow(string id);
         Task<Show> UpdateAsync(Show show);
         Task DeleteAsync(Show show);
     }

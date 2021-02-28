@@ -34,7 +34,7 @@ namespace SpringFestivalService.Services
             }
         }
 
-        public async Task<List<Show>> CreateShowListAsync()
+        public async Task<List<Show>> GetShowListAsync()
         {
             try
             {
@@ -47,6 +47,21 @@ namespace SpringFestivalService.Services
                 throw;
             }
         }
+
+        public async Task<List<Show>> GetShow(string id)
+        {
+            try
+            {
+                var showsList = await _repository.GetListAsync(id);
+                return showsList;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
 
         public async Task<Show> UpdateAsync(Show show)
         {
