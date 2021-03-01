@@ -1,19 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using SpringFestivalService.Configuration;
 using SpringFestivalService.Models;
 using SpringFestivalService.Repository;
-using SpringFestivalService.ServiceRegistration;
 using SpringFestivalService.Services;
 
 namespace SpringFestivalService
@@ -58,6 +51,9 @@ namespace SpringFestivalService
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            var creator = app.ApplicationServices.GetService<TableCreator>();
+            creator.CreateTable();
         }
     }
 }

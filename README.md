@@ -19,6 +19,11 @@ dotnet add package AWSSDK.DynamoDBv2
 dotnet add package Newtonsoft.Json
 ```
 
+Launch db:
+* Launch Docker desktop on your pc.
+* docker-compose up
+
+
 
 ## Questions
 * How to query all data?

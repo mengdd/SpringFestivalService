@@ -1,11 +1,11 @@
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
-using Amazon.DynamoDBv2.Model;
+using Amazon.Runtime;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SpringFestivalService.Repository;
 
-namespace SpringFestivalService.ServiceRegistration
+namespace SpringFestivalService.Configuration
 {
     public static class DynamoDbRegistration
     {
@@ -28,10 +28,11 @@ namespace SpringFestivalService.ServiceRegistration
         {
             var awsOptions = configuration.GetAWSOptions();
             awsOptions.DefaultClientConfig.ServiceURL = options.ServiceUrl;
+            awsOptions.Credentials = new BasicAWSCredentials(options.AWS_ACCESS_KEY_ID, options.AWS_SECRET_ACCESS_KEY);
 
             services.AddDefaultAWSOptions(awsOptions);
             services.AddAWSService<IAmazonDynamoDB>(awsOptions);
-            services.AddSingleton(x => new DynamoDBContextConfig {TableNamePrefix = options.TablePrefix});
+            services.AddSingleton(x => new DynamoDBContextConfig());
             services.AddTransient(x =>
             {
                 var client = x.GetService<IAmazonDynamoDB>();
@@ -39,8 +40,8 @@ namespace SpringFestivalService.ServiceRegistration
                 return new DynamoDBContext(client, config);
             });
             services.AddTransient<IDynamoDBContext, DynamoDBContext>();
+            services.AddTransient<DynamoDbOptions>();
             services.AddTransient<TableCreator>();
-
             return services;
         }
     }

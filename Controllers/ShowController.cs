@@ -26,6 +26,7 @@ namespace SpringFestivalService.Controllers
         {
             return await _service.GetShowListAsync();
         }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<Show>> GetShow([FromRoute] string id)
         {
@@ -37,6 +38,7 @@ namespace SpringFestivalService.Controllers
 
             return student.FirstOrDefault();
         }
+
         [HttpPost]
         public async Task<ActionResult<Show>> CreateShow(Show show)
         {

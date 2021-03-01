@@ -1,30 +1,34 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
-using SpringFestivalService.ServiceRegistration;
+using Microsoft.Extensions.Logging;
+using SpringFestivalService.Configuration;
 
 namespace SpringFestivalService.Repository
 {
     public class TableCreator
     {
         private readonly IAmazonDynamoDB _amazonDynamoDbClient;
+        private readonly ILogger<TableCreator> _logger;
+        private readonly DynamoDbOptions _options;
 
-        public TableCreator(IAmazonDynamoDB amazonDynamoDbClient)
+        public TableCreator(IAmazonDynamoDB amazonDynamoDbClient, DynamoDbOptions options, ILogger<TableCreator> logger)
         {
             _amazonDynamoDbClient = amazonDynamoDbClient;
+            _options = options;
+            _logger = logger;
         }
 
-        public async Task CreateTable(DynamoDbOptions options)
+        public async Task CreateTable()
         {
-            var tableName = options.TablePrefix + "Show";
+            var tableName = "Show";
 
             var tables = await _amazonDynamoDbClient.ListTablesAsync();
             if (!tables.TableNames.Contains(tableName))
             {
-                Console.WriteLine("Table not found, creating table => " + tableName);
+                _logger.Log(LogLevel.Information, "Table not found, creating table => " + tableName);
                 var createTableRequest = new CreateTableRequest
                 {
                     TableName = tableName,
@@ -37,25 +41,38 @@ namespace SpringFestivalService.Repository
                     {
                         new KeySchemaElement
                         {
-                            AttributeName = "Key",
+                            AttributeName = "Id",
                             KeyType = KeyType.HASH
+                        },
+                        new KeySchemaElement
+                        {
+                            AttributeName = "Time",
+                            KeyType = KeyType.RANGE
                         }
                     },
                     AttributeDefinitions = new List<AttributeDefinition>
                     {
-                        new AttributeDefinition {AttributeName = "Name", AttributeType = ScalarAttributeType.S}
+                        new AttributeDefinition {AttributeName = "Id", AttributeType = ScalarAttributeType.S},
+                        new AttributeDefinition {AttributeName = "Time", AttributeType = ScalarAttributeType.S},
                     }
                 };
+
                 await _amazonDynamoDbClient.CreateTableAsync(createTableRequest);
 
                 bool isTableAvailable = false;
                 while (!isTableAvailable)
                 {
-                    Console.WriteLine("Waiting for table to be active...");
+                    _logger.Log(LogLevel.Debug, "Waiting for table to be active...");
                     Thread.Sleep(2000);
                     var tableStatus = await _amazonDynamoDbClient.DescribeTableAsync(tableName);
                     isTableAvailable = tableStatus.Table.TableStatus == "ACTIVE";
                 }
+
+                _logger.Log(LogLevel.Information, "Table is ACTIVE");
+            }
+            else
+            {
+                _logger.Log(LogLevel.Information, "Table already exists");
             }
         }
     }
