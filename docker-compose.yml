@@ -5,12 +5,17 @@ services:
    container_name: dynamodb-local
    ports:
     - "8000:8000"
-#  app:
-#    depends_on:
-#     - dynamodb-local
-#    image: ddb-console:latest
-#    container_name: app-node
-#    ports:
-#     - "8080:8080"
-#    links:
-#     - "dynamodb-local"
+    
+ app:
+   depends_on:
+    - dynamodb-local
+   image: spring-festival-service
+   container_name: my-service
+   ports:
+    - "5001:80"
+   links:
+    - "dynamodb-local"
+   environment:
+     - AWS_ACCESS_KEY_ID='DUMMYIDEXAMPLE'
+     - AWS_SECRET_ACCESS_KEY='DUMMYEXAMPLEKEY'
+     - REGION='eu-west-1'
