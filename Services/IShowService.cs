@@ -10,6 +10,6 @@ namespace SpringFestivalService.Services
         Task<List<Show>> GetShowListAsync();
         Task<List<Show>> GetShow(string id);
         Task<Show> UpdateAsync(Show show);
-        Task DeleteAsync(Show show);
+        Task DeleteAsync(string id);
     }
 }

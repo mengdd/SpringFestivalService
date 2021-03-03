@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using SpringFestivalService.Configuration;
 using SpringFestivalService.Models;
 using SpringFestivalService.Repository;
 
@@ -24,6 +26,7 @@ namespace SpringFestivalService.Services
         {
             try
             {
+                show.Year = Constants.Year;
                 var createdShow = await _repository.CreateAsync(show);
                 return createdShow;
             }
@@ -38,7 +41,7 @@ namespace SpringFestivalService.Services
         {
             try
             {
-                var showsList = await _repository.GetListAsync("?"); //TODO do we need a primary key?
+                var showsList = await _repository.GetListAsync(Constants.Year);
                 return showsList;
             }
             catch (Exception e)
@@ -77,11 +80,12 @@ namespace SpringFestivalService.Services
             }
         }
 
-        public async Task DeleteAsync(Show show)
+        public async Task DeleteAsync(string id)
         {
             try
             {
-                await _repository.DeleteAsync(show);
+                var model = await _repository.GetListAsync(id);
+                await _repository.DeleteAsync(model.FirstOrDefault());
             }
             catch (Exception e)
             {

@@ -1,6 +1,8 @@
+using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.Runtime;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SpringFestivalService.Repository;
@@ -23,7 +25,7 @@ namespace SpringFestivalService.Configuration
             return services;
         }
 
-        public static IServiceCollection AddOperationalDynamoDbStore(this IServiceCollection services,
+        private static IServiceCollection AddOperationalDynamoDbStore(this IServiceCollection services,
             IConfiguration configuration, DynamoDbOptions options)
         {
             var awsOptions = configuration.GetAWSOptions();
@@ -41,8 +43,16 @@ namespace SpringFestivalService.Configuration
             });
             services.AddTransient<IDynamoDBContext, DynamoDBContext>();
             services.AddTransient<DynamoDbOptions>();
-            services.AddTransient<TableCreator>();
+            services.AddTransient<ITableCreator, TableCreator>();
+            
             return services;
+        }
+        
+        public static async Task<IApplicationBuilder> WithDatabaseTables(this IApplicationBuilder app)
+        {
+            var creator = app.ApplicationServices.GetService<ITableCreator>();
+            await creator.CreateTable();
+            return app;
         }
     }
 }

@@ -31,6 +31,7 @@ namespace SpringFestivalService
 
             services.AddDynamoDb(Configuration, "DynamoDB");
             services.AddScoped<IShowService, ShowService>();
+            services.AddScoped<IVoteService, VoteService>();
             services.AddScoped<IRepository<Show>, Repository<Show>>();
         }
 
@@ -52,8 +53,7 @@ namespace SpringFestivalService
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
-            var creator = app.ApplicationServices.GetService<TableCreator>();
-            creator.CreateTable();
+            app.WithDatabaseTables();
         }
     }
 }

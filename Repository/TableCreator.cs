@@ -8,7 +8,7 @@ using SpringFestivalService.Configuration;
 
 namespace SpringFestivalService.Repository
 {
-    public class TableCreator
+    public class TableCreator : ITableCreator
     {
         private readonly IAmazonDynamoDB _amazonDynamoDbClient;
         private readonly ILogger<TableCreator> _logger;
@@ -24,7 +24,6 @@ namespace SpringFestivalService.Repository
         public async Task CreateTable()
         {
             var tableName = "Show";
-
             var tables = await _amazonDynamoDbClient.ListTablesAsync();
             if (!tables.TableNames.Contains(tableName))
             {
@@ -37,43 +36,49 @@ namespace SpringFestivalService.Repository
                         ReadCapacityUnits = 3,
                         WriteCapacityUnits = 1
                     },
+
                     KeySchema = new List<KeySchemaElement>
                     {
                         new KeySchemaElement
                         {
-                            AttributeName = "Id",
+                            AttributeName = "Year",
                             KeyType = KeyType.HASH
                         },
                         new KeySchemaElement
                         {
-                            AttributeName = "Time",
+                            AttributeName = "Id",
                             KeyType = KeyType.RANGE
                         }
                     },
                     AttributeDefinitions = new List<AttributeDefinition>
                     {
-                        new AttributeDefinition {AttributeName = "Id", AttributeType = ScalarAttributeType.S},
-                        new AttributeDefinition {AttributeName = "Time", AttributeType = ScalarAttributeType.S},
+                        new AttributeDefinition {AttributeName = "Year", AttributeType = ScalarAttributeType.S},
+                        new AttributeDefinition {AttributeName = "Id", AttributeType = ScalarAttributeType.S}
                     }
                 };
 
                 await _amazonDynamoDbClient.CreateTableAsync(createTableRequest);
 
-                bool isTableAvailable = false;
-                while (!isTableAvailable)
-                {
-                    _logger.Log(LogLevel.Debug, "Waiting for table to be active...");
-                    Thread.Sleep(2000);
-                    var tableStatus = await _amazonDynamoDbClient.DescribeTableAsync(tableName);
-                    isTableAvailable = tableStatus.Table.TableStatus == "ACTIVE";
-                }
-
-                _logger.Log(LogLevel.Information, "Table is ACTIVE");
+                await WaitForTableActive(tableName);
             }
             else
             {
                 _logger.Log(LogLevel.Information, "Table already exists");
             }
+        }
+
+        private async Task WaitForTableActive(string tableName)
+        {
+            var isTableAvailable = false;
+            while (!isTableAvailable)
+            {
+                _logger.Log(LogLevel.Debug, "Waiting for table to be active...");
+                Thread.Sleep(2000);
+                var tableStatus = await _amazonDynamoDbClient.DescribeTableAsync(tableName);
+                isTableAvailable = tableStatus.Table.TableStatus == "ACTIVE";
+            }
+
+            _logger.Log(LogLevel.Information, "Table is ACTIVE");
         }
     }
 }

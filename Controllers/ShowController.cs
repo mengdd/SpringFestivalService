@@ -46,5 +46,14 @@ namespace SpringFestivalService.Controllers
 
             return CreatedAtAction(nameof(GetShow), new {id = show.Id}, show);
         }
+        
+        
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteShow([FromRoute] string id)
+        {
+            await _service.DeleteAsync(id);
+
+            return NoContent();
+        }
     }
 }

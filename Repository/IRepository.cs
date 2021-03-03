@@ -4,11 +4,11 @@ using SpringFestivalService.Models;
 
 namespace SpringFestivalService.Repository
 {
-    public interface IRepository<Model> where Model : BaseModel
+    public interface IRepository<TModel> where TModel : BaseModel
     {
-        Task<Model> CreateAsync(Model model);
-        Task<List<Model>> GetListAsync(string primaryKey);
-        Task<Model> UpdateAsync(Model model);
-        Task DeleteAsync(Model model);
+        Task<TModel> CreateAsync(TModel model);
+        Task<List<TModel>> GetListAsync(string primaryKey);
+        Task<TModel> UpdateAsync(TModel model);
+        Task DeleteAsync(TModel model);
     }
 }

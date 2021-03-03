@@ -7,18 +7,18 @@ using SpringFestivalService.Models;
 
 namespace SpringFestivalService.Repository
 {
-    public class Repository<Model> : IRepository<Model> where Model : BaseModel
+    public class Repository<TModel> : IRepository<TModel> where TModel : BaseModel
     {
-        private readonly ILogger<Repository<Model>> _logger;
+        private readonly ILogger<Repository<TModel>> _logger;
         private readonly IDynamoDBContext _context;
 
-        public Repository(ILogger<Repository<Model>> logger, IDynamoDBContext context)
+        public Repository(ILogger<Repository<TModel>> logger, IDynamoDBContext context)
         {
             _logger = logger;
             _context = context;
         }
 
-        public async Task<Model> CreateAsync(Model model)
+        public async Task<TModel> CreateAsync(TModel model)
         {
             try
             {
@@ -32,11 +32,11 @@ namespace SpringFestivalService.Repository
             }
         }
 
-        public async Task<List<Model>> GetListAsync(string primaryKey)
+        public async Task<List<TModel>> GetListAsync(string primaryKey)
         {
             try
             {
-                var list = await _context.QueryAsync<Model>(primaryKey).GetRemainingAsync();
+                var list = await _context.QueryAsync<TModel>(primaryKey).GetRemainingAsync();
                 return list;
             }
             catch (Exception e)
@@ -46,7 +46,7 @@ namespace SpringFestivalService.Repository
             }
         }
 
-        public async Task<Model> UpdateAsync(Model model)
+        public async Task<TModel> UpdateAsync(TModel model)
         {
             try
             {
@@ -60,7 +60,7 @@ namespace SpringFestivalService.Repository
             }
         }
 
-        public async Task DeleteAsync(Model model)
+        public async Task DeleteAsync(TModel model)
         {
             try
             {
