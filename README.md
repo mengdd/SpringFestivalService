@@ -1,10 +1,42 @@
 # SpringFestivalService
 
+## Getting Started
+### Development
+For active development stage:
+
+Launch the db at local:
+```
+docker run -p 8000:8000 amazon/dynamodb-local:latest -jar DynamoDBLocal.jar -sharedDb
+```
+
+Then launch the app from IDE.
+
+
 ## Features
-* [x] Create a show.
-* [x] Query a show by id.
+* [x] Create a show. 
+  POST https://localhost:5001/Show
+  
+```json
+{
+"Id" : "103",
+"Name": "hehehe"
+}
+```
+
 * [x] Query all shows.
+  GET https://localhost:5001/Show
+  
+* [x] Query a show by id.
+  GET https://localhost:5001/Show/101
+
 * [x] Vote for a show.
+  POST https://localhost:5001/Vote
+  
+```json
+{
+    "id": "102"
+}
+```
 
 ## Tasks
 * [x] setup db
@@ -80,6 +112,8 @@ The db ServiceUrl should be: `"ServiceUrl": "http://localhost:8000",`.
 
 ## Questions
 * [] How to query all data?
+* [] How to query by other conditions?
+* [] How to query and sort the results? 
 * [x] Do I need to create table at startup? how?
 * [x] 加了注解的时候, 报错: System.InvalidOperationException: Must have one range key or a GSI index defined for the table Show 是什么意思?
 * [] When run app using docker run and docker-compose: test with `http`; When run app with IDE, test with `https`, why? Both comment out `app.UseHttpsRedirection();`.
