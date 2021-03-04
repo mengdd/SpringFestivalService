@@ -22,10 +22,9 @@ namespace SpringFestivalService.Controllers
         }
 
         [HttpPost]
-        public async Task<List<Show>> Vote(Show show)
+        public async Task<List<Show>> Vote([FromBody] Show show)
         {
-            show.Year = Constants.Year;
-            var result = await _service.Vote(show);
+            var result = await _service.Vote(show.Id);
 
             return result;
         }

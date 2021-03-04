@@ -6,6 +6,6 @@ namespace SpringFestivalService.Services
 {
     public interface IVoteService
     {
-        Task<List<Show>> Vote(Show show);
+        Task<List<Show>> Vote(string showId);
     }
 }

@@ -7,7 +7,7 @@ namespace SpringFestivalService.Repository
     public interface IRepository<TModel> where TModel : BaseModel
     {
         Task<TModel> CreateAsync(TModel model);
-        Task<List<TModel>> GetListAsync(string primaryKey);
+        Task<List<TModel>> GetListAsync(string primaryKey, string indexName = null);
         Task<TModel> UpdateAsync(TModel model);
         Task DeleteAsync(TModel model);
     }

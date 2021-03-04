@@ -40,14 +40,14 @@ namespace SpringFestivalService.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Show>> CreateShow(Show show)
+        public async Task<ActionResult<Show>> CreateShow([FromBody] Show show)
         {
             await _service.CreateAsync(show);
 
             return CreatedAtAction(nameof(GetShow), new {id = show.Id}, show);
         }
-        
-        
+
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteShow([FromRoute] string id)
         {

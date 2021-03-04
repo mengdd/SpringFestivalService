@@ -32,7 +32,7 @@ namespace SpringFestivalService.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e.ToString());
                 throw;
             }
         }
@@ -46,7 +46,7 @@ namespace SpringFestivalService.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e.ToString());
                 throw;
             }
         }
@@ -60,7 +60,7 @@ namespace SpringFestivalService.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e.ToString());
                 throw;
             }
         }
@@ -75,7 +75,7 @@ namespace SpringFestivalService.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e.ToString());
                 throw;
             }
         }
@@ -89,7 +89,7 @@ namespace SpringFestivalService.Services
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e.ToString());
                 throw;
             }
         }

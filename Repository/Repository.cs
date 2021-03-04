@@ -27,21 +27,25 @@ namespace SpringFestivalService.Repository
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e.ToString());
                 throw;
             }
         }
 
-        public async Task<List<TModel>> GetListAsync(string primaryKey)
+        public async Task<List<TModel>> GetListAsync(string primaryKey, string indexName = null)
         {
+            var dynamoDbOperationConfig = new DynamoDBOperationConfig
+            {
+                IndexName = indexName
+            };
             try
             {
-                var list = await _context.QueryAsync<TModel>(primaryKey).GetRemainingAsync();
+                var list = await _context.QueryAsync<TModel>(primaryKey, dynamoDbOperationConfig).GetRemainingAsync();
                 return list;
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e.ToString());
                 throw;
             }
         }
@@ -55,7 +59,7 @@ namespace SpringFestivalService.Repository
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e.ToString());
                 throw;
             }
         }
@@ -68,7 +72,7 @@ namespace SpringFestivalService.Repository
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                _logger.LogError(e.ToString());
                 throw;
             }
         }

@@ -1,7 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using SpringFestivalService.Configuration;
 using SpringFestivalService.Models;
@@ -20,19 +20,27 @@ namespace SpringFestivalService.Services
             _repository = repository;
         }
 
-        public async Task<List<Show>> Vote(Show show)
+        public async Task<List<Show>> Vote(string showId)
         {
-            //TODO Refactor this part
-            var allData = _repository.GetListAsync(Constants.Year).Result;
-            var oldShow = allData.Where(s => s.Id.Equals(show.Id)).ToList().FirstOrDefault();
-            if (oldShow != null)
+            try
             {
-                var newVote = oldShow.Vote + 1;
-                show.Vote = newVote;
-                await _repository.UpdateAsync(show);
-            }
+                //TODO Refactor this part
+                var allData = await _repository.GetListAsync(Constants.Year);
+                var show = allData.Where(s => s.Id.Equals(showId)).ToList().FirstOrDefault();
+                if (show != null)
+                {
+                    var newVote = show.Vote + 1;
+                    show.Vote = newVote;
+                    await _repository.UpdateAsync(show);
+                }
 
-            return _repository.GetListAsync(Constants.Year).Result;
+                return _repository.GetListAsync(Constants.Year).Result;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.ToString());
+                throw;
+            }
         }
     }
 }
